@@ -3,17 +3,18 @@
 ScriptPath=$0
 Dir=$(cd $(dirname "$ScriptPath"); pwd)
 Basename=$(basename "$ScriptPath")
-CMakePath=$Dir/_build
+CMakeDir=$Dir/_build
 
 
 # ##########################################################
 # command-line handling
 
 while [[ $# -gt 0 ]]; do
-    case $1 in
-        --help)
 
-            cat << EOF
+  case $1 in
+    --help)
+
+      cat << EOF
 shwild is a small, standalone library, implemented in C++ with a C and a C++ API, that provides shell-compatible wildcard matching
 Copyright (c) 2019-2024, Matthew Wilson and Synesis Information Systems
 Copyright (c) 2005-2023, Matthew Wilson and Sean Kelly
@@ -33,26 +34,26 @@ Flags/options:
 
 EOF
 
-            exit 0
-            ;;
-        *)
+      exit 0
+      ;;
+    *)
 
-            >&2 echo "$ScriptPath: unrecognised argument '$1'; use --help for usage"
+      >&2 echo "$ScriptPath: unrecognised argument '$1'; use --help for usage"
 
-            exit 1
-            ;;
-    esac
+      exit 1
+      ;;
+  esac
 
-    shift
+  shift
 done
 
 
 # ##########################################################
 # main()
 
-mkdir -p $CMakePath || exit 1
+mkdir -p $CMakeDir || exit 1
 
-cd $CMakePath
+cd $CMakeDir
 
 echo "Executing make and then running all test programs"
 
