@@ -1,5 +1,10 @@
 #  **shwild** Changes
 
+## 10th July 2024 - 0.11.8
+
+* Boilerplate files improvements
+
+
 ## 0.11.7 - 12th May 2024
 
 * Visual C++ 17 compatibility
