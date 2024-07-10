@@ -6,13 +6,12 @@ Basename=$(basename "$ScriptPath")
 CMakeDir=$Dir/_build
 
 
+BDUTDirGiven=
 CMakeExamplesDisabled=0
 CMakeTestingDisabled=0
 CMakeVerboseMakefile=0
 Configuration=Release
 RunMake=0
-# STLSoftDirEnvVar=${STLSOFT}
-STLSoftDirGiven=
 
 
 # ##########################################################
@@ -21,6 +20,11 @@ STLSoftDirGiven=
 while [[ $# -gt 0 ]]; do
 
   case $1 in
+    --bdut-root-dir)
+
+      shift
+      BDUTDirGiven=$1
+      ;;
     -v|--cmake-verbose-makefile)
 
       CMakeVerboseMakefile=1
@@ -54,6 +58,11 @@ $ScriptPath [ ... flags/options ... ]
 Flags/options:
 
     behaviour:
+
+    --bdut-root-dir <dir>
+        specifies the BDUT root-directory, which will be passed to CMake
+        as the variable BDUT_ROOT, from which the BDUT library will be used,
+        rather than using the bundled version
 
     -v
     --cmake-verbose-makefile
@@ -108,6 +117,8 @@ cd $CMakeDir
 
 echo "Executing CMake"
 
+if [ -z $BDUTDirGiven ]; then CMakeBDUTVariable="" ; else CMakeBDUTVariable="-DBDUT_ROOT=$BDUTDirGiven/" ; fi
+
 if [ $CMakeExamplesDisabled -eq 0 ]; then CMakeBuildExamplesFlag="ON" ; else CMakeBuildExamplesFlag="OFF" ; fi
 
 if [ $CMakeTestingDisabled -eq 0 ]; then CMakeBuildTestingFlag="ON" ; else CMakeBuildTestingFlag="OFF" ; fi
@@ -115,6 +126,7 @@ if [ $CMakeTestingDisabled -eq 0 ]; then CMakeBuildTestingFlag="ON" ; else CMake
 if [ $CMakeVerboseMakefile -eq 0 ]; then CMakeVerboseMakefileFlag="OFF" ; else CMakeVerboseMakefileFlag="ON" ; fi
 
 cmake \
+  $CMakeBDUTVariable \
   -DBUILD_EXAMPLES:BOOL=$CMakeBuildExamplesFlag \
   -DBUILD_TESTING:BOOL=$CMakeBuildTestingFlag \
   -DCMAKE_BUILD_TYPE=$Configuration \

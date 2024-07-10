@@ -60,10 +60,10 @@ message(NOTICE "Generating CMake build scripts for ${PROJECT_NAME} ${PROJECT_VER
 
 # adhere strictly to C and C++ standards plus extensions. These are actually
 # useless since we do not compile anything; they merely state our intention.
-set(CMAKE_C_STANDARD 11)
+set(CMAKE_C_STANDARD 17)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 set(CMAKE_C_EXTENSIONS ON) # GNU extensions and POSIX standard
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS ON)
 
@@ -76,34 +76,40 @@ include(GNUInstallDirs)
 
 
 # ##########################################################
-# STLSoft
-#
-# We provide flexibility here, as in:
-# 1. if a CMake variable STLSOFT is provided then it is used; otherwise
-# 2. if an environment variable STLSOFT is provided then it then it is used; otherwise
-# 3. we set the #define SHWILD_NO_STLSOFT.
+# BDUT
 
-if(NOT DEFINED STLSOFT AND NOT DEFINED ENV{STLSOFT})
+if(DEFINED BDUT_ROOT OR DEFINED ENV{BDUT_ROOT})
 
-	message("-- building library, examples, and tests without use of STLSoft")
+	if(DEFINED BDUT_ROOT)
 
-	add_definitions(-DSHWILD_NO_STLSOFT)
-else()
+		message("-- BDUT_ROOT provided as CMake variable with value ${BDUT_ROOT}")
 
-	if(DEFINED STLSOFT)
-
-		message("-- STLSOFT provided as CMake variable with value ${STLSOFT}")
-
-		set(STLSOFT_INCLUDE_DIR ${STLSOFT}/include)
+		set(BDUT_INCLUDE_DIR ${BDUT_ROOT}/include)
 	else()
 
-		message("-- STLSOFT provided as environment variable with value $ENV{STLSOFT}")
+		message("-- BDUT_ROOT provided as environment variable with value $ENV{BDUT_ROOT}")
 
-		set(STLSOFT_INCLUDE_DIR $ENV{STLSOFT}/include)
+		set(BDUT_INCLUDE_DIR $ENV{BDUT_ROOT}/include)
 	endif()
 
-	include_directories(${STLSOFT_INCLUDE_DIR})
+	message("(before) INCLUDE_DIRECTORIES=${INCLUDE_DIRECTORIES}")
+
+	include_directories(BEFORE ${BDUT_INCLUDE_DIR})
+
+	message("(after) INCLUDE_DIRECTORIES=${INCLUDE_DIRECTORIES}")
+
+else()
+
+	include_directories(BEFORE include/bundled-software)
 endif()
+
+
+# ##########################################################
+# STLSoft
+
+# specify preprocessor object-like macro `SHWILD_NO_STLSOFT` to elide all
+# dependencies on STLSoft
+add_definitions(-DSHWILD_NO_STLSOFT)
 
 
 # ##########################################################

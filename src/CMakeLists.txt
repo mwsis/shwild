@@ -9,7 +9,7 @@ add_library(shwild.core
 
 if(APPLE)
 
-	message("-- -- adding '/usr/local/include' to include-directories for 'src'")
+	message("-- -- adding '/usr/local/include' to include-directories for 'src' (on macOS)")
 
 	include_directories("/usr/local/include")
 endif(APPLE)
